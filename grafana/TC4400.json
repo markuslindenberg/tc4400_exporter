@@ -1,5 +1,13 @@
 {
-  "__inputs": [],
+  "__inputs": [
+{
+      "name" : "inputDS",
+      "datasource": "-- Grafana --",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+],
   "__requires": [
     {
       "type": "grafana",
