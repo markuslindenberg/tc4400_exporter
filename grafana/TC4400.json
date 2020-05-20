@@ -1,13 +1,13 @@
 {
   "__inputs": [
-{
+    {
       "name" : "inputDS",
       "datasource": "-- Grafana --",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
     }
-],
+  ],
   "__requires": [
     {
       "type": "grafana",
@@ -49,6 +49,7 @@
   "links": [],
   "panels": [
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -141,6 +142,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
@@ -395,6 +397,7 @@
       "type": "table"
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -487,6 +490,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -574,6 +578,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
@@ -828,6 +833,7 @@
       "type": "table"
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -915,6 +921,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -1002,6 +1009,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
