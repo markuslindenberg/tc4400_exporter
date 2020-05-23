@@ -1,5 +1,13 @@
 {
-  "__inputs": [],
+  "__inputs": [
+    {
+      "name" : "inputDS",
+      "datasource": "-- Grafana --",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
   "__requires": [
     {
       "type": "grafana",
@@ -41,6 +49,7 @@
   "links": [],
   "panels": [
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -133,6 +142,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
@@ -387,6 +397,7 @@
       "type": "table"
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -479,6 +490,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -566,6 +578,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
@@ -820,6 +833,7 @@
       "type": "table"
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -907,6 +921,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -994,6 +1009,7 @@
       }
     },
     {
+      "datasource" : "${inputDS}",
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -1113,6 +1129,5 @@
   },
   "timezone": "",
   "title": "TC4400",
-  "uid": "hflOYTtZz",
-  "version": 28
+  "version": 29
 }
