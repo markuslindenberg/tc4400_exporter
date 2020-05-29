@@ -17,10 +17,10 @@ const (
 
 func main() {
 	var (
-		listenAddress   = kingpin.Flag("web.listen-address", "Address to listen on for web interface and telemetry.").Default(":9623").String()
+		listenAddress   = kingpin.Flag("web.listen-address", "Address to listen on for web interface and telemetry.").Default(":9623").OverrideDefaultFromEnvar("TC4400_EXPORTER_PORT").String()
 		metricsPath     = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").String()
-		clientScrapeURI = kingpin.Flag("client.scrape-uri", "Base URI on which to scrape TC4400.").Default("http://admin:bEn2o%23US9s@192.168.100.1/").String()
-		clientTimeout   = kingpin.Flag("client.timeout", "Timeout for HTTP requests to TC440.").Default("50s").Duration()
+		clientScrapeURI = kingpin.Flag("client.scrape-uri", "Base URI on which to scrape TC4400.").Default("http://admin:bEn2o%23US9s@192.168.100.1/").OverrideDefaultFromEnvar("TC4400_EXPORTER_SCRAPEURI").String()
+		clientTimeout   = kingpin.Flag("client.timeout", "Timeout for HTTP requests to TC440.").Default("50s").OverrideDefaultFromEnvar("TC4400_EXPORTER_CLIENTTIMEOUT").Duration()
 	)
 
 	log.AddFlags(kingpin.CommandLine)

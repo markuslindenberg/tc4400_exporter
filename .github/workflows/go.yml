@@ -1,0 +1,69 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [published]
+
+jobs:
+
+  build:
+    name: Build and push docker
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Test
+      run: go test -v .
+
+    - name: Build and push
+    # Build statically linked so we can use it in a from scratch dockerfile
+      env:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        BUILD_DOCKER: ${{ secrets.BUILD_DOCKER }}
+      run: |
+          if [ -z "$BUILD_DOCKER" ]; then echo "BUILD_DOCKER is not set, returning"; exit 0; fi;
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags '-w' 
+          docker build -t $DOCKER_REPO:${{ github.sha }}-amd64 .
+          docker push $DOCKER_REPO:${{ github.sha }}-amd64
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -tags netgo -ldflags '-w' 
+          docker build -t $DOCKER_REPO:${{ github.sha }}-arm64v8 .
+          docker push $DOCKER_REPO:${{ github.sha }}-arm64v8
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -tags netgo -ldflags '-w' 
+          docker build -t $DOCKER_REPO:${{ github.sha }}-arm32 .
+          docker push $DOCKER_REPO:${{ github.sha }}-arm32
+          export DOCKER_CLI_EXPERIMENTAL=enabled 
+          export REF=$(echo ${{ github.ref }} | sed 's#refs/.*/##')
+          docker manifest create ${DOCKER_REPO}:${{ github.sha }} ${DOCKER_REPO}:${{ github.sha }}-amd64 ${DOCKER_REPO}:${{ github.sha }}-arm64v8 ${DOCKER_REPO}:${{ github.sha }}-arm32
+          docker manifest annotate ${DOCKER_REPO}:${{ github.sha }} ${DOCKER_REPO}:${{ github.sha }}-arm32 --os linux --arch arm --variant v6
+          docker manifest annotate ${DOCKER_REPO}:${{ github.sha }} ${DOCKER_REPO}:${{ github.sha }}-arm32 --os linux --arch arm --variant v7
+          docker manifest annotate ${DOCKER_REPO}:${{ github.sha }} ${DOCKER_REPO}:${{ github.sha }}-arm64v8 --os linux --arch arm64 --variant v8
+          docker manifest push --purge ${DOCKER_REPO}:${{ github.sha }}
+          if [ "$REF" = "master" ]; then
+            DOCKER_TAG="latest"
+          else
+            if [ "$REF" = "" ]; then
+              return
+            fi
+              DOCKER_TAG=$REF
+          fi
+          docker manifest create ${DOCKER_REPO}:${DOCKER_TAG} ${DOCKER_REPO}:${{ github.sha }}-amd64 ${DOCKER_REPO}:${{ github.sha }}-arm64v8 ${DOCKER_REPO}:${{ github.sha }}-arm32
+          docker manifest annotate ${DOCKER_REPO}:${DOCKER_TAG} ${DOCKER_REPO}:${{ github.sha }}-arm32 --os linux --arch arm --variant v6
+          docker manifest annotate ${DOCKER_REPO}:${DOCKER_TAG} ${DOCKER_REPO}:${{ github.sha }}-arm32 --os linux --arch arm --variant v7
+          docker manifest annotate ${DOCKER_REPO}:${DOCKER_TAG} ${DOCKER_REPO}:${{ github.sha }}-arm64v8 --os linux --arch arm64 --variant v8
+          docker manifest push --purge ${DOCKER_REPO}:${DOCKER_TAG}
+
