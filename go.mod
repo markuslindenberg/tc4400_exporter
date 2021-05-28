@@ -1,4 +1,4 @@
-module github.com/markuslindenberg/tc4400_exporter
+module github.com/mikeodr/tc4400_exporter
 
 go 1.13
 
